@@ -1,7 +1,7 @@
 # import RPi.GPIO as GPIO
 from flask import Flask, request
-from pyngrok import ngrok
-import os
+# from pyngrok import ngrok
+# import os
 
 app = Flask(__name__)
 # GPIO.setmode(GPIO.BCM)
