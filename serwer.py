@@ -1,11 +1,11 @@
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 from flask import Flask, request
 from pyngrok import ngrok
 import os
 
 app = Flask(__name__)
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(18, GPIO.OUT)
+# GPIO.setmode(GPIO.BCM)
+# GPIO.setup(18, GPIO.OUT)
 
 @app.route('/control', methods=['POST'])
 def control():
@@ -15,10 +15,9 @@ def control():
 
     pin_state = data['pin_state']
 
-    if pin_state == 'on':
-        GPIO.output(18, GPIO.HIGH)
-    elif pin_state == 'off':
-        GPIO.output(18, GPIO.LOW)
+        # GPIO.output(18, GPIO.HIGH)
+
+        # GPIO.output(18, GPIO.LOW)
 
     return {'success': True}
 
