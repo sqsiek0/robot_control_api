@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 from flask import Flask, request
 from pyngrok import ngrok
+import os
 
 app = Flask(__name__)
 GPIO.setmode(GPIO.BCM)
@@ -26,7 +27,8 @@ def walking():
     data = request.get_json()
     # if data is 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-    ngrok_tunnel = ngrok.connect(5000)
-    print('Ngrok URL:', ngrok_tunnel.public_url)
+# if __name__ == '__main__':
+app.run(host=os.getenv('IP', '0.0.0.0'), port=int(os.getenv('PORT', 8080)))
+    # app.run(host='0.0.0.0', port=5000)
+    # ngrok_tunnel = ngrok.connect(5000)
+    # print('Ngrok URL:', ngrok_tunnel.public_url)
