@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
+import variables
 
 app = Flask(__name__)
-isRobotWork = True
+
 
 @app.route('/control', methods=['POST'])
 def control():
@@ -15,11 +16,11 @@ def control():
 @app.route('/working', methods = ['GET'])
 def working():
     try:    
-        if isRobotWork:
-            isRobotWork = False
-            return jsonify({'isWorking': isRobotWork}), 200
+        if variables.isRobotWork:
+            variables.isRobotWork = False
+            return jsonify({'isWorking': variables.isRobotWork}), 200
         else:
-            isRobotWork = True;
-            return jsonify({'isWorking': isRobotWork}), 200
+            variables.isRobotWork = True;
+            return jsonify({'isWorking': variables.isRobotWork}), 200
     except:
         return jsonify({'Error during checking robot', 400})
