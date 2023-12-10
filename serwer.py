@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-import variables
+import python_files.variables as variables
 
 app = Flask(__name__)
 
