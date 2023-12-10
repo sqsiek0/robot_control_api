@@ -68,15 +68,24 @@ def translation():
         
         if axis == 'x':
            if value == 'plus': variables.translationState = 'w'
-           if value == 'minus': variables.translationState = 's'
+           elif value == 'minus': variables.translationState = 's'
+           else:
+               return jsonify({'error': 'Invalid value'}), 400
+           
         elif axis == 'y':
             if value == 'plus': variables.translationState = 'd'
-            if value == 'minus': variables.translationState = 'a'
+            elif value == 'minus': variables.translationState = 'a'
+            else:
+               return jsonify({'error': 'Invalid value'}), 400
+           
         elif axis == 'z':
             if value == 'plus': variables.translationState = 'q'
-            if value == 'minus': variables.translationState = 'e'
+            elif value == 'minus': variables.translationState = 'e'
+            else:
+               return jsonify({'error': 'Invalid value'}), 400
+           
         else:
-            return jsonify({'error': 'Invalid rotate value'}), 400
+            return jsonify({'error': 'Invalid translation axis value'}), 400
         
         return jsonify({'message': 'Correct'}), 200
     except Exception as e:
@@ -94,17 +103,23 @@ def rotate():
         
         if axis == 'x':
             if value == 'plus': variables.rotationState = 'u'
-            if value == 'minus': variables.rotationState = 'i'
+            elif value == 'minus': variables.rotationState = 'i'
+            else:
+               return jsonify({'error': 'Invalid value'}), 400
             
         elif axis == 'y':
             if value == 'plus': variables.rotationState = 'j'
-            if value == 'minus': variables.rotationState = 'k'
+            elif value == 'minus': variables.rotationState = 'k'
+            else:
+               return jsonify({'error': 'Invalid value'}), 400
 
         elif axis == 'z':
             if value == 'plus': variables.rotationState = 'm'
-            if value == 'minus': variables.rotationState = ','
+            elif value == 'minus': variables.rotationState = ','
+            else:
+               return jsonify({'error': 'Invalid value'}), 400   
         else:
-            return jsonify({'error': 'Invalid rotate value'}), 400
+            return jsonify({'error': 'Invalid rotate axis value'}), 400
         
         return jsonify({'message': 'Correct'}), 200
     except Exception as e:
