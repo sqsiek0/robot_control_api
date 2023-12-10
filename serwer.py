@@ -3,106 +3,112 @@ import variables
 
 app = Flask(__name__)
 
-@app.route('/working', methods = ['GET'])
+@app.route('/working', methods=['GET'])
 def working():
     try:    
-        if variables.isRobotWork:
-            variables.isRobotWork = False
-            return jsonify({'isWorking': variables.isRobotWork}), 200
-        else:
-            variables.isRobotWork = True;
-            return jsonify({'isWorking': variables.isRobotWork}), 200
-    except:
-        return jsonify({'Error during checking robot', 400})
+        variables.isRobotWork = not variables.isRobotWork
+        return jsonify({'isWorking': variables.isRobotWork}), 200
+    except Exception as e:
+        return jsonify({'error': 'Error during checking robot status', 'details': str(e)}), 400
     
-@app.route('/walking', methods = ['POST'])
+@app.route('/walking', methods=['POST'])
 def walking():
     try:
         data = request.get_json()
         if data is None:
-            return jsonify({'No body provided', 400})
+            return jsonify({'error': 'No body provided'}), 400
         
-        walk = data['walkState']
+        walk = data.get('walkState')
         
         if walk == 'front':
             variables.robotState = '4'
             variables.moveDirection = '1'
-            return jsonify({'Correct'}, 200)
         elif walk == 'back':
             variables.robotState = '4'
             variables.moveDirection = '2'
-            return jsonify({'Correct'}, 200)
         elif walk == 'stop':
             variables.robotState = '1'
             variables.moveDirection = '1'
-            return jsonify({'Correct'}, 200)
-    except:
-        return jsonify({'Error during walking', 400})
+        else:
+            return jsonify({'error': 'Invalid walk state'}), 400
+        
+        return jsonify({'message': 'Correct'}), 200
+    except Exception as e:
+        return jsonify({'error': 'Error during walking', 'details': str(e)}), 400
     
-@app.route('/turning', methods = ['POST'])
+@app.route('/turning', methods=['POST'])
 def turning():
     try:
         data = request.get_json()
         if data is None:
-            return jsonify({'No body provided', 400})
+            return jsonify({'error': 'No body provided'}), 400
         
-        turn = data['turn']
+        turn = data.get('turn')
         
         if turn == 'left':
             variables.robotState = '5'
-            return jsonify({'Correct'}, 200)
         elif turn == 'right':
             variables.robotState = '6'
-            return jsonify({'Correct'}, 200)
-    except:
-        return jsonify({'Error during turning', 400})
+        else:
+            return jsonify({'error': 'Invalid turn direction'}), 400
+        
+        return jsonify({'message': 'Correct'}), 200
+    except Exception as e:
+        return jsonify({'error': 'Error during turning', 'details': str(e)}), 400
     
-@app.route('/translation', methods = ['post'])
+@app.route('/translation', methods=['POST'])
 def translation():
     try:
         data = request.get_json()
         if data is None:
-            return jsonify({'No body provided', 400})
+            return jsonify({'error': 'No body provided'}), 400
         
-        axis = data['axis']
-        value = data['value']
+        axis = data.get('axis')
+        value = data.get('value')
         
         if axis == 'x':
-            if value == 'plus': variables.translationState = 'w'
-            if value == 'minus': variables.translationState = 's'
-            return jsonify({'Correct'}, 200)
+           if value == 'plus': variables.translationState = 'w'
+           if value == 'minus': variables.translationState = 's'
         elif axis == 'y':
             if value == 'plus': variables.translationState = 'd'
             if value == 'minus': variables.translationState = 'a'
-            return jsonify({'Correct'}, 200)
         elif axis == 'z':
             if value == 'plus': variables.translationState = 'q'
             if value == 'minus': variables.translationState = 'e'
-            return jsonify({'Correct'}, 200)
-    except:
-        return jsonify({'Error during translation', 400})
+        else:
+            return jsonify({'error': 'Invalid rotate value'}), 400
+        
+        return jsonify({'message': 'Correct'}), 200
+    except Exception as e:
+        return jsonify({'error': 'Error during translation', 'details': str(e)}), 400
     
-@app.route('/rotate', methods = ['post'])
+@app.route('/rotate', methods=['POST'])
 def rotate():
     try:
         data = request.get_json()
         if data is None:
-            return jsonify({'No body provided', 400})
+            return jsonify({'error': 'No body provided'}), 400
         
-        axis = data['axis']
-        value = data['value']
+        axis = data.get('axis')
+        value = data.get('value')
         
         if axis == 'x':
             if value == 'plus': variables.rotationState = 'u'
             if value == 'minus': variables.rotationState = 'i'
-            return jsonify({'Correct'}, 200)
+            
         elif axis == 'y':
             if value == 'plus': variables.rotationState = 'j'
             if value == 'minus': variables.rotationState = 'k'
-            return jsonify({'Correct'}, 200)
+
         elif axis == 'z':
             if value == 'plus': variables.rotationState = 'm'
             if value == 'minus': variables.rotationState = ','
-            return jsonify({'Correct'}, 200)
-    except:
-        return jsonify({'Error during translation', 400})
+        else:
+            return jsonify({'error': 'Invalid rotate value'}), 400
+        
+        return jsonify({'message': 'Correct'}), 200
+    except Exception as e:
+        return jsonify({'error': 'Error during rotation', 'details': str(e)}), 400
+
+if __name__ == '__main__':
+    app.run(debug=True)
