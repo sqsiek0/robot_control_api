@@ -1,7 +1,24 @@
 from flask import Flask, request, jsonify
-import python_files.variables as variables
+import variables as variables
+import paho.mqtt.client as mqtt
 
 app = Flask(__name__)
+# app.config['MQTT_BROKER_URL'] = 'stingray-app-97v6u.ondigitalocean.app'
+# app.config['MQTT_BROKER_PORT'] = 1883
+# app.config['MQTT_KEEPALIVE'] = 60  # sekundy
+# app.config['MQTT_TLS_ENABLED'] = False  # czy używać TLS
+
+# mqtt_client = mqtt.Client()
+# mqtt_client.connect('104.248.252.28', 1883)
+
+def initialize_mqtt():
+    mqtt_client = mqtt.Client()
+    try:
+        mqtt_client.connect('104.248.252.28', 1883)
+        # Dodatkowa konfiguracja klienta MQTT
+        # ...
+    except Exception as e:
+        app.logger.error(f"Failed to connect to MQTT: {e}")
 
 @app.route('/working', methods=['GET'])
 def working():
@@ -31,6 +48,10 @@ def walking():
             variables.moveDirection = '1'
         else:
             return jsonify({'error': 'Invalid walk state'}), 400
+        
+        body = {'robotState': variables.robotState, 'moveDirection': variables.moveDirection}
+        
+        mqtt_client.publish('robot/walking', body)
         
         return jsonify({'message': 'Correct'}), 200
     except Exception as e:
@@ -126,4 +147,4 @@ def rotate():
         return jsonify({'error': 'Error during rotation', 'details': str(e)}), 400
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
