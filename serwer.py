@@ -1,24 +1,26 @@
 from flask import Flask, request, jsonify
+import json
 import variables as variables
 import paho.mqtt.client as mqtt
 
 app = Flask(__name__)
-# app.config['MQTT_BROKER_URL'] = 'stingray-app-97v6u.ondigitalocean.app'
-# app.config['MQTT_BROKER_PORT'] = 1883
-# app.config['MQTT_KEEPALIVE'] = 60  # sekundy
-# app.config['MQTT_TLS_ENABLED'] = False  # czy używać TLS
-
-# mqtt_client = mqtt.Client()
-# mqtt_client.connect('104.248.252.28', 1883)
+mqtt_client = None
 
 def initialize_mqtt():
+    global mqtt_client
+    
     mqtt_client = mqtt.Client()
     try:
         mqtt_client.connect('104.248.252.28', 1883)
-        # Dodatkowa konfiguracja klienta MQTT
-        # ...
+        mqtt_client.loop_start()
+        mqtt_client.keepalive = 60
+        mqtt_client.reconnect_delay_set(min_delay=1, max_delay=120)
+
     except Exception as e:
         app.logger.error(f"Failed to connect to MQTT: {e}")
+        
+def before_first_request():
+    initialize_mqtt()
 
 @app.route('/working', methods=['GET'])
 def working():
@@ -30,6 +32,8 @@ def working():
     
 @app.route('/walking', methods=['POST'])
 def walking():
+    global mqtt_client
+    
     try:
         data = request.get_json()
         if data is None:
@@ -49,7 +53,7 @@ def walking():
         else:
             return jsonify({'error': 'Invalid walk state'}), 400
         
-        body = {'robotState': variables.robotState, 'moveDirection': variables.moveDirection}
+        body = json.dumps({'robotState': variables.robotState, 'moveDirection': variables.moveDirection})
         
         mqtt_client.publish('robot/walking', body)
         
@@ -59,6 +63,8 @@ def walking():
     
 @app.route('/turning', methods=['POST'])
 def turning():
+    global mqtt_client
+    
     try:
         data = request.get_json()
         if data is None:
@@ -73,12 +79,18 @@ def turning():
         else:
             return jsonify({'error': 'Invalid turn direction'}), 400
         
+        body = json.dumps({'robotState': variables.robotState})
+        
+        mqtt_client.publish('robot/turning', body)
+        
         return jsonify({'message': 'Correct'}), 200
     except Exception as e:
         return jsonify({'error': 'Error during turning', 'details': str(e)}), 400
     
 @app.route('/translation', methods=['POST'])
 def translation():
+    global mqtt_client
+    
     try:
         data = request.get_json()
         if data is None:
@@ -104,9 +116,13 @@ def translation():
             elif value == 'minus': variables.translationState = 'e'
             else:
                return jsonify({'error': 'Invalid value'}), 400
-           
+
         else:
             return jsonify({'error': 'Invalid translation axis value'}), 400
+        
+        body = json.dumps({'translationState': variables.translationState})
+        
+        mqtt_client.publish('robot/translation', body)
         
         return jsonify({'message': 'Correct'}), 200
     except Exception as e:
@@ -114,6 +130,8 @@ def translation():
     
 @app.route('/rotate', methods=['POST'])
 def rotate():
+    global mqtt_client
+    
     try:
         data = request.get_json()
         if data is None:
@@ -141,6 +159,10 @@ def rotate():
                return jsonify({'error': 'Invalid value'}), 400   
         else:
             return jsonify({'error': 'Invalid rotate axis value'}), 400
+        
+        body = json.dumps({'rotationState': variables.rotationState})
+        
+        mqtt_client.publish('robot/rotate', body)
         
         return jsonify({'message': 'Correct'}), 200
     except Exception as e:
