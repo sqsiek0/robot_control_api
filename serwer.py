@@ -9,7 +9,7 @@ mqtt_client = mqtt.Client()
 def initialize_mqtt():
     global mqtt_client
     
-    mqtt_client = mqtt.Client()
+    # mqtt_client = mqtt.Client()
     try:
         mqtt_client.connect('134.122.84.130', 1883)
         mqtt_client.loop_start()
