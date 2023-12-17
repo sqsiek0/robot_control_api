@@ -19,8 +19,6 @@ def initialize_mqtt():
     except Exception as e:
         app.logger.error(f"Failed to connect to MQTT: {e}")
         
-def before_first_request():
-    initialize_mqtt()
 
 @app.route('/working', methods=['GET'])
 def working():
