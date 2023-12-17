@@ -4,7 +4,7 @@ import variables as variables
 import paho.mqtt.client as mqtt
 
 app = Flask(__name__)
-mqtt_client = None
+mqtt_client = mqtt.Client()
 
 def initialize_mqtt():
     global mqtt_client
