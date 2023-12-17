@@ -11,7 +11,7 @@ def initialize_mqtt():
     
     mqtt_client = mqtt.Client()
     try:
-        mqtt_client.connect('104.248.252.28', 1883)
+        mqtt_client.connect('134.122.84.130', 1883)
         mqtt_client.loop_start()
         mqtt_client.keepalive = 60
         mqtt_client.reconnect_delay_set(min_delay=1, max_delay=120)
