@@ -118,7 +118,9 @@ def translation():
         else:
             return jsonify({'error': 'Invalid translation axis value'}), 400
         
-        body = json.dumps({'translationState': variables.translationState})
+        variables.robotState = '7'
+        
+        body = json.dumps({'translationState': variables.translationState, 'robotState': variables.robotState})
         
         mqtt_client.publish('robot/translation', body)
         
@@ -158,7 +160,9 @@ def rotate():
         else:
             return jsonify({'error': 'Invalid rotate axis value'}), 400
         
-        body = json.dumps({'rotationState': variables.rotationState})
+        variables.robotState = '7'
+        
+        body = json.dumps({'rotationState': variables.rotationState, 'robotState': variables.robotState})
         
         mqtt_client.publish('robot/rotate', body)
         
