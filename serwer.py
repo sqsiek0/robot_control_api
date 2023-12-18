@@ -46,7 +46,7 @@ def walking():
             variables.robotState = '4'
             variables.moveDirection = '2'
         elif walk == 'stop':
-            variables.robotState = '1'
+            variables.robotState = '0'
             variables.moveDirection = '1'
         else:
             return jsonify({'error': 'Invalid walk state'}), 400
